@@ -29,13 +29,13 @@ def deserialize_json(json_object):
 def signup():
     user: User = deserialize_json(request.data)
     print(user)
-    # nie bangla if db.users.find({"email": user.name}):
+    # nie bangla :( if db.users.find_one({"email": user.name}) is not None:
     #     return Response(response=jsonify({"error": "User already exists"}), status=409, mimetype='application/json')
     db.users.insert_one({
         "name": user.name,
         "surname": user.surname,
         "email": user.email,
-        "password": user.password
+        "password": user.password # tutaj jakiś bcrypt by się przydał :p
     })
     return Response(mimetype='application/json', status=200)
 
