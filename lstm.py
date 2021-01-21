@@ -10,17 +10,34 @@ from sklearn.preprocessing import MinMaxScaler
 BATCH_SIZE = 10
 TIME_STEP = 50
 
+
+
+def prepare_data(file_name, usercols):
+    raw_data = pd.read_csv(file_name, index_col='Date', squeeze=True, usecols=['Date', 'Close'], parse_dates=True)
+    sc = MinMaxScaler(feature_range=(0, 1))
+    return sc.fit_transform(np.array(raw_data).reshape(-1, 1))
+
+def get_train_set(scaled_data):
+    X_train = []
+    y_train = []
+    for i in range(TIME_STEP, len(scaled_data)):
+        X_train.append(training_set_scaled[i - TIME_STEP:i, 0])
+        y_train.append(scaled_data[i, 0])
+    X_train, y_train = np.array([X_train]), np.array(y_train)
+
+
+
 if __name__ == "__main__":
-    cdpr_stocks = pd.read_csv('cdr.txt',
-                              index_col='<DATE>',
+    cdpr_stocks = pd.read_csv('stock_price.csv',
+                              index_col='Date',
                               squeeze=True,
-                              usecols=['<DATE>', '<CLOSE>'],
+                              usecols=['Date', 'Close'],
                               parse_dates=True)
     cdpr_stocks = cdpr_stocks.rename_axis('Date')
     cdpr_stocks = cdpr_stocks.rename('Price')
 
     sc = MinMaxScaler(feature_range=(0, 1))
-    training_set_scaled = sc.fit_transform(np.array(cdpr_stocks["1/1/2010":"31/12/2018"]).reshape(-1, 1))
+    training_set_scaled = sc.fit_transform(np.array(cdpr_stocks["2010-01-01":"2018-12-31"]).reshape(-1, 1))
 
     X_train = []
     y_train = []
