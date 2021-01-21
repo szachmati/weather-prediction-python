@@ -71,6 +71,7 @@ def convert_date_to_string(plus_days):
 def train():
     dataset_url1 = 'https://opendata-download-metobs.smhi.se/api/version/1.0/parameter/2/station/71420/period/corrected-archive/data.csv'
     dataset_url2 = 'https://opendata-download-metobs.smhi.se/api/version/1.0/parameter/2/station/71420/period/latest-months/data.csv'
+    dataset_warsaw = '.'
 
     data1 = pd.read_csv(dataset_url1, sep=';', skiprows=3607, names=column_names)
     data2 = pd.read_csv(dataset_url2, sep=';', skiprows=15, names=column_names)
@@ -84,7 +85,7 @@ def train():
 
     y = data1['temperature']
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=123)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
 
     tree_model = DecisionTreeRegressor()
 
