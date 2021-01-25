@@ -1,6 +1,7 @@
 import datetime
 from flask import Flask, Response, request
 from flask_cors import CORS
+from flask_bcrypt import generate_password_hash
 from pymongo import MongoClient
 from .utils import deserialize_json
 from .model import User
@@ -31,7 +32,16 @@ def signup():
     return Response(status=200, response=dumps({"message": "Registration completed successfully"}))
 
 
-@app.route('/api/hello-world')
+# na razie mock
+@app.route('/api/signin', methods=['POST'])
+def signin():
+    user: User = deserialize_json(request.data)
+    if db.users.find_one({"email": user.name}) is not None:
+        return Response(status=200)
+    return None
+
+
+@app.route('/api/info')
 def hello_world():
     return {
         "user": "Mati",
