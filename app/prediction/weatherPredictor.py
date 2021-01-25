@@ -1,11 +1,10 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from keras.models import Sequential
 from sklearn.preprocessing import MinMaxScaler
 from datetime import date, timedelta
 from keras.layers import LSTM, Dense, Dropout, Bidirectional
-import dataCreator
+
 
 def predict(training_set, test_set, parameter, sc):
     x_train = []

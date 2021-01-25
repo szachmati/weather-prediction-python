@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime
 import os
 
-os.chdir("./csv/")
+os.chdir("csv/")
 
 frequency = 24
 start_date = '1-JAN-2020'
