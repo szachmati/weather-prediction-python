@@ -2,5 +2,5 @@ from json import loads
 from types import SimpleNamespace
 
 
-def deserialize_json(json_object):
+def json_to_object(json_object):
     return loads(json_object, object_hook=lambda d: SimpleNamespace(**d))
