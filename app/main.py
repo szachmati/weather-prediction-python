@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask_bcrypt import generate_password_hash
 from pymongo import MongoClient
 from .utils import deserialize_json
-from .model import User
+from .model import User, UserLogin
 from .utils.settings import MONGO_URL, JWT_SECRET_KEY
 from json import dumps
 
@@ -21,7 +21,7 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 @app.route('/api/signup', methods=['POST'])
 def signup():
     user: User = deserialize_json(request.data)
-    if db.users.find_one({"email": user.name}) is not None:
+    if db.users.find_one({"email": user.email}) is not None:
         return Response(response=dumps({"error": "User with given email already exists"}), status=409)
     db.users.insert_one({
         "name": user.name,
@@ -35,9 +35,15 @@ def signup():
 # na razie mock
 @app.route('/api/signin', methods=['POST'])
 def signin():
-    user: User = deserialize_json(request.data)
-    if db.users.find_one({"email": user.name}) is not None:
-        return Response(status=200)
+    user_credentials: UserLogin = deserialize_json(request.data)
+    if db.users.find_one({"email": user_credentials.email}) is not None:
+        return Response(status=200, response=dumps({
+            "message": "Login was successful",
+            "user": {
+                "email": user_credentials.email,
+                "password": user_credentials.password
+            }
+        }))
     return None
 
 
