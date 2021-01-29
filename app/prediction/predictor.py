@@ -5,17 +5,18 @@ from keras.models import Sequential
 from keras.layers import *
 from sklearn.preprocessing import MinMaxScaler
 import time
-import dataCreator
 from datetime import date, timedelta
+from ..prediction import dataCreator
 
-def predict(miasto, parameter) :
-    #tworzy się objekt Dataframe z zawartością danych historycznych ze wskazanego miasta
+
+def predict(miasto, parameter):
+    # tworzy się objekt Dataframe z zawartością danych historycznych ze wskazanego miasta
     df = pd.read_csv(miasto + '.csv', sep=',')
     kol_od = 19
     kol_do = 20
 
     df.head(5)
-    #pobieranych jest index, który będzie przedstawiał
+    # pobieranych jest index, który będzie przedstawiał
     split_idx = int(len(df) * 0.9)
     training_set = df.iloc[:split_idx, kol_od:kol_do].values
     test_set = df.iloc[split_idx:, kol_od:kol_do].values
@@ -92,18 +93,22 @@ def predict(miasto, parameter) :
     plt.legend()
     plt.show()
 
+
 def getEndDate():
     return date.today().strftime("%d-%b-%Y")
 
+
 def getStartDate():
-    return (date.today() - timedelta(days= 729)).strftime("%d-%b-%Y")
+    return (date.today() - timedelta(days=729)).strftime("%d-%b-%Y")
+
 
 def run_menu():
     print("*" * 67)
     print("-" * 22 + "5 DAYS WEATHER FORECAST" + "-" * 22)
     print(" " * 5 + " Write name of the city (e.g. Warsaw, Gdynia, London)" + " " * 5)
     cityName = input("Enter city name: ")
-    dataCreator.retrieve_hist_data([cityName], getStartDate(), getEndDate(), 24, location_label=False, export_csv=True, store_df=True)
+    dataCreator.retrieve_hist_data([cityName], getStartDate(), getEndDate(), 24, location_label=False, export_csv=True,
+                                   store_df=True)
     print("-" * 67)
     print(" " * 5 + "Program can predict the following parameters for " + cityName + " " * 5)
     print(" " * 3 + "|tempC     |maxtempC  |mintempC|totalSnow_cm|FeelsLikeC   |")
@@ -111,5 +116,5 @@ def run_menu():
     parameter = input("Enter parameter name: ")
     print("-" * 67)
     print(" " * 5 + "Program now is now making forecast of " + parameter + " for next 5 days in " + cityName + " " * 5)
-    predict(cityName,parameter)
+    predict(cityName, parameter)
     print("*" * 67)
