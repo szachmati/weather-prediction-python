@@ -120,6 +120,35 @@ def retrieve_hist_data( location_list, start_date, end_date, frequency, location
 
     return (result_list)
 
+def setColumnNumberByName(parameter, x, y):
+    if parameter=='maxtempC':
+        x = 1
+        y = 2
+    elif parameter=='mintempC':
+        x = 2
+        y = 3
+    elif parameter=='totalSnow_cm':
+        x = 3
+        y = 4
+    elif parameter == 'FeelsLikeC':
+        x = 12
+        y = 13
+    elif parameter == 'WindChillC':
+        x = 14
+        y = 15
+    elif parameter == 'humidity':
+        x = 17
+        y = 18
+    elif parameter == 'pressure':
+        x = 19
+        y = 20
+    elif parameter == 'tempC':
+        x = 20
+        y = 21
+    elif parameter == 'windspeedKmph':
+        x = 22
+        y = 24
+
 
 hist_weather_data = retrieve_hist_data(location_list,
                                        start_date,
@@ -128,3 +157,7 @@ hist_weather_data = retrieve_hist_data(location_list,
                                        location_label=False,
                                        export_csv=True,
                                        store_df=True)
+
+
+
+[[1,2,3,4,5,6,8,9,0,],1], [[1,2,3,4,5,6,8,9,0,],2], [[1,2,3,4,5,6,8,9,0,],3]
