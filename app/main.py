@@ -39,7 +39,7 @@ def signin():
     user = db.users.find_one({"email": user_credentials.email})
     if user is not None and check_password_hash(user["password"], user_credentials.password):
         user_dto = map_to_user_dto(user)
-        access_token = create_access_token(identity=user_dto.__dict__)
+        access_token = create_access_token(identity=user_dto.__dict__, fresh=True)
         return Response(status=200, response=dumps({"access_token": access_token}))
     elif user is not None and not check_password_hash(user["password"], user_credentials.password):
         return Response(status=400, response=dumps({"error": "Invalid user credentials"}))
