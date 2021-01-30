@@ -1,4 +1,4 @@
-from ..dto.UserDto import UserDto
+from ..dto import UserDto
 
 
 def map_to_user_dto(user):
