@@ -1,10 +1,7 @@
 from json import dumps
-
 from flask import Blueprint, request, Response
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
-
-
 from ..dto import UserLoginDTO
 from ..main import db
 from ..mapper import map_to_user_dto
@@ -16,10 +13,9 @@ authentication = Blueprint("auth", __name__)
 
 @authentication.route("/signup", methods=["POST"])
 def signup():
-    print(request.data)
     user: User = json_to_object(request.data)
     if db.users.find_one({"email": user.email}) is not None:
-        return Response(response=dumps({"error": "User with given email already exists"}), status=409)
+        return Response(status=409, response=dumps({"error": "User with given email already exists"}))
     user.password = generate_password_hash(user.password)
     db.users.insert_one(user.__dict__)
     return Response(status=200, response=dumps({"message": "Registration completed successfully"}))
