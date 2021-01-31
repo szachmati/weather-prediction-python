@@ -1,9 +1,9 @@
 from json import dumps
 from flask import Blueprint, request, Response
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from ..dto import UserLoginDTO
-from ..main import db
+from ..main import db, jwt
 from ..mapper import map_to_user_dto
 from ..model import User
 from ..utils import json_to_object
@@ -33,3 +33,16 @@ def signin():
         return Response(status=400, response=dumps({"error": "Invalid user credentials"}))
     else:
         return Response(status=400, response=dumps({"error": "Provide correct email and password"}))
+
+
+@authentication.route("/user", methods=["GET"])
+@jwt_required
+def user_info():
+    return get_jwt_identity
+
+
+@jwt.unauthorized_loader
+def unauthorized_handler(callback):
+    return Response(status=401, response=dumps({"error": callback}))
+
+
