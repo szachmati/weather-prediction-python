@@ -38,7 +38,7 @@ def signin():
 @authentication.route("/user", methods=["GET"])
 @jwt_required
 def user_info():
-    return get_jwt_identity
+    return get_jwt_identity()
 
 
 @jwt.unauthorized_loader
