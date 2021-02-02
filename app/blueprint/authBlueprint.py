@@ -2,10 +2,9 @@ from json import dumps
 from flask import Blueprint, request, Response
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from ..dto import UserLoginDTO
+from ..dto import UserLoginDTO, UserDto
 from ..main import db, jwt
 from ..mapper import map_to_user_dto
-from ..model import User
 from ..utils import json_to_object
 
 authentication = Blueprint("auth", __name__)
@@ -13,7 +12,7 @@ authentication = Blueprint("auth", __name__)
 
 @authentication.route("/signup", methods=["POST"])
 def signup():
-    user: User = json_to_object(request.data)
+    user: UserDto = json_to_object(request.data)
     if db.users.find_one({"email": user.email}) is not None:
         return Response(status=409, response=dumps({"error": "User with given email already exists"}))
     user.password = generate_password_hash(user.password)
@@ -35,6 +34,15 @@ def signin():
         return Response(status=400, response=dumps({"error": "Provide correct email and password"}))
 
 
+@authentication.route('/predict', methods=['GET'])
+def predict():
+    city = request.args.get('city')
+    condition = request.args.get('condition')
+    if city is None or condition is None:
+        return Response(status=400, response=dumps({"error": "Provide all parameters"}))
+    return Response(status=200)
+
+
 @authentication.route("/user", methods=["GET"])
 @jwt_required
 def user_info():
@@ -44,5 +52,3 @@ def user_info():
 @jwt.unauthorized_loader
 def unauthorized_handler(callback):
     return Response(status=401, response=dumps({"error": callback}))
-
-
