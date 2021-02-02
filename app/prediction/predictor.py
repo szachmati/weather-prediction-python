@@ -5,23 +5,26 @@ from keras.models import Sequential
 from keras.layers import *
 from sklearn.preprocessing import MinMaxScaler
 import time
-import dataCreator
 from datetime import date, timedelta
+from .dataCreator import DataCreator
 
-def predict(miasto, parameter) :
-    #tworzy się objekt Dataframe z zawartością danych historycznych ze wskazanego miasta
-    df = pd.read_csv('csv/London.csv', sep=',')
 
-    kol_od = 0
-    kol_do = 0
-    dataCreator.setColumnNumberByName(parameter, kol_do,kol_do)
+def predict(city, condition):
+    data_creator = DataCreator()
+    data_creator.retrieve_hist_data([city], getStartDate(), getEndDate(), 24, location_label=False, export_csv=True,
+                                    store_df=True)
+    # Tworzony jest objekt Dataframe z zawartością danych historycznych ze wskazanego miasta
+    df = pd.read_csv(city + '.csv', sep=',')
+
+    kol_od = data_creator.setColumnX(condition)
+    kol_do = data_creator.setColumnY(condition)
     df.head(5)
-    #pobierany jest index, który umożliwi podział danych
+    # pobierany jest index, który umożliwi podział danych
     split_idx = int(len(df) * 0.9)
-    #w celu trenowania modelu pobierane jest 90% danych
+    # w celu trenowania modelu pobierane jest 90% danych
     training_set = df.iloc[:split_idx, kol_od:kol_do].values
 
-    #wartości ze zbioru skalowane są tak aby wpasować się w zakres między 0 a 1
+    # wartości ze zbioru skalowane są tak aby wpasować się w zakres między 0 a 1
     sc = MinMaxScaler(feature_range=(0, 1))
     training_set_scaled = sc.fit_transform(training_set)
 
@@ -88,8 +91,8 @@ def predict(miasto, parameter) :
     elapsed = end - start
 
     # Zostaje utworzont wykres zestawiający przewidziane parametry z prawdziwymi wartościami
-    plt.plot(df.loc[split_idx:, 'date_time'], dataset_test.values, color='black', label='Real TempC')
-    plt.plot(df.loc[split_idx:, 'date_time'], predicted_param, color='orange', label='Predicted TempC')
+    plt.plot(df.loc[split_idx:, 'date_time'], dataset_test.values, color='black', label='Real ' + condition)
+    plt.plot(df.loc[split_idx:, 'date_time'], predicted_param, color='orange', label='Predicted ' + condition)
 
     plt.xticks(np.arange(0, len(dataset_test.values), 5), rotation='vertical')
     plt.title(' Prediction EPOCHS = ' + str(EPOCHS) + ' BATCH_SIZE = ' + str(BATCH_SIZE) + ' INPUT_DATA = ' + str(
@@ -99,26 +102,27 @@ def predict(miasto, parameter) :
     plt.legend()
     plt.show()
 
+
 def getEndDate():
     return date.today().strftime("%d-%b-%Y")
 
+
 def getStartDate():
-    return (date.today() - timedelta(days= 729)).strftime("%d-%b-%Y")
+    return (date.today() - timedelta(days=729)).strftime("%d-%b-%Y")
+
 
 def run_menu():
     print("*" * 67)
-    print("-" * 22 + "5 DAYS WEATHER FORECAST" + "-" * 22)
+    print("-" * 22 + "LSTM WEATHER FORECAST" + "-" * 22)
     print(" " * 5 + " Write name of the city (e.g. Warsaw, Gdynia, London)" + " " * 5)
     cityName = input("Enter city name: ")
-    #dataCreator.retrieve_hist_data([cityName], getStartDate(), getEndDate(), 24, location_label=False, export_csv=True, store_df=True)
+
     print("-" * 67)
     print(" " * 5 + "Program can predict the following parameters for " + cityName + " " * 5)
-    print(" " * 3 + "|tempC     |maxtempC  |mintempC|totalSnow_cm|FeelsLikeC   |")
-    print(" " * 3 + "|HeatIndexC|WindChillC|humidity|pressure    |windspeedKmph|")
+    print(" " * 3 + "|tempC     |maxtempC  |mintempC  |totalSnow_cm |")
+    print(" " * 3 + "|WindChillC|humidity  |pressure  |FeelsLikeC   |")
     parameter = input("Enter parameter name: ")
     print("-" * 67)
-    print(" " * 5 + "Program now is now making forecast of " + parameter + " for next 5 days in " + cityName + " " * 5)
+    print(" " * 5 + "Program now is now making forecast of " + parameter + " for " + cityName + " " * 5)
     predict(cityName, parameter)
     print("*" * 67)
-
-run_menu()

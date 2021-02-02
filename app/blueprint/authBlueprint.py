@@ -6,6 +6,7 @@ from ..dto import UserLoginDTO, UserDto
 from ..main import db, jwt
 from ..mapper import map_to_user_dto
 from ..utils import json_to_object
+from ..prediction import predictor
 
 authentication = Blueprint("auth", __name__)
 
@@ -40,6 +41,7 @@ def predict():
     condition = request.args.get('condition')
     if city is None or condition is None:
         return Response(status=400, response=dumps({"error": "Provide all parameters"}))
+    predictor.predict(city, condition)
     return Response(status=200)
 
 
