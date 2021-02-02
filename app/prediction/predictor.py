@@ -11,8 +11,8 @@ from .dataCreator import DataCreator
 
 def predict(city, condition):
     data_creator = DataCreator()
-    data_creator.retrieve_hist_data([city], getStartDate(), getEndDate(), 24, location_label=False, export_csv=True,
-                                    store_df=True)
+    # data_creator.retrieve_hist_data([city], getStartDate(), getEndDate(), 24, location_label=False, export_csv=True,store_df=True)
+
     # Tworzony jest objekt Dataframe z zawartością danych historycznych ze wskazanego miasta
     df = pd.read_csv(city + '.csv', sep=',')
 
@@ -40,7 +40,7 @@ def predict(city, condition):
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
 
     # Wskazywana jest ilość epok (EPOCHS) oraz rozmiar porcji danych (BATCH_SIZE)
-    EPOCHS = 50
+    EPOCHS = 1
     BATCH_SIZE = 5
     # Do stworzenia modelu wykorzystywana jest klasa Sequential
     model = Sequential()
@@ -101,7 +101,7 @@ def predict(city, condition):
     plt.ylabel('parameters')
     plt.legend()
     plt.show()
-
+    return predicted_param
 
 def getEndDate():
     return date.today().strftime("%d-%b-%Y")
@@ -109,20 +109,3 @@ def getEndDate():
 
 def getStartDate():
     return (date.today() - timedelta(days=729)).strftime("%d-%b-%Y")
-
-
-def run_menu():
-    print("*" * 67)
-    print("-" * 22 + "LSTM WEATHER FORECAST" + "-" * 22)
-    print(" " * 5 + " Write name of the city (e.g. Warsaw, Gdynia, London)" + " " * 5)
-    cityName = input("Enter city name: ")
-
-    print("-" * 67)
-    print(" " * 5 + "Program can predict the following parameters for " + cityName + " " * 5)
-    print(" " * 3 + "|tempC     |maxtempC  |mintempC  |totalSnow_cm |")
-    print(" " * 3 + "|WindChillC|humidity  |pressure  |FeelsLikeC   |")
-    parameter = input("Enter parameter name: ")
-    print("-" * 67)
-    print(" " * 5 + "Program now is now making forecast of " + parameter + " for " + cityName + " " * 5)
-    predict(cityName, parameter)
-    print("*" * 67)
