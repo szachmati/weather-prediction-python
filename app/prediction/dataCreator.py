@@ -7,7 +7,9 @@ import os
 
 os.chdir("./")
 
+
 class DataCreator:
+
     def extract_monthly_data(self, data):
         num_days = len(data)
         # initialize df_month to store return data
@@ -45,14 +47,14 @@ class DataCreator:
             df_month = pd.concat([df_month, df])
         return (df_month)
 
-
     def retrieve_this_location(self, api_key, location, start_date, end_date, frequency, response_cache_path):
         start_time = datetime.now()
 
         # create list of first day of month for range between start and end dates non-inclusive (open)
         list_mon_begin = pd.date_range(start_date, end_date, freq='MS', closed='right')
         # convert to Series and add start_date at beginning
-        list_mon_begin = pd.concat([pd.Series(pd.to_datetime(start_date)), pd.Series(list_mon_begin)], ignore_index=True)
+        list_mon_begin = pd.concat([pd.Series(pd.to_datetime(start_date)), pd.Series(list_mon_begin)],
+                                   ignore_index=True)
 
         # create list of month end dates for range between start and end dates non-inclusive (open)
         list_mon_end = pd.date_range(start_date, end_date, freq='M', closed='left')
@@ -92,14 +94,14 @@ class DataCreator:
             print('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
         return (df_hist)
 
-
     def retrieve_hist_data(self, location_list, start_date, end_date, frequency, location_label=False, export_csv=True,
-                       store_df=False, response_cache_path=None):
+                           store_df=False, response_cache_path=None):
         api_key = '55896c359c734b0b829124906210601'
         result_list = []
         for location in location_list:
             print('\n\nRetrieving weather data for ' + location + '\n\n')
-            df_this_city = self.retrieve_this_location(api_key, location, start_date, end_date, frequency, response_cache_path)
+            df_this_city = self.retrieve_this_location(api_key, location, start_date, end_date, frequency,
+                                                       response_cache_path)
 
             if (location_label == True):
                 # add city name as prefix to the colnames
@@ -115,7 +117,6 @@ class DataCreator:
                 result_list.append(df_this_city)
 
         return (result_list)
-
 
     def setColumnY(self, parameter):
         if parameter == 'maxtempC':
@@ -136,7 +137,6 @@ class DataCreator:
             return 21
         elif parameter == 'windspeedKmph':
             return 24
-
 
     def setColumnX(self, parameter):
         if parameter == 'maxtempC':
