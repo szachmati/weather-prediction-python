@@ -1,4 +1,5 @@
 from json import dumps
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -13,7 +14,7 @@ from .dataCreator import DataCreator
 class PredictionService:
     def predict(self, city, condition):
         data_creator = DataCreator()
-        # data_creator.retrieve_hist_data([city], getStartDate(), getEndDate(), 24, location_label=False, export_csv=True,store_df=True)
+        # data_creator.retrieve_hist_data([city], self.getStartDate(), self.getEndDate(), 24, location_label=False, export_csv=True,store_df=True)
 
         # Tworzony jest objekt Dataframe z zawartością danych historycznych ze wskazanego miasta
         df = pd.read_csv(city + '.csv', sep=',')
@@ -103,7 +104,10 @@ class PredictionService:
         plt.ylabel('parameters')
         plt.legend()
         plt.show()
-        return dumps(predicted_param.tolist())
+        predicted_param_list = predicted_param.tolist()
+        for x in dataset_test.values:
+            predicted_param_list.append([float(x[0])])
+        return dumps(predicted_param_list)
 
     def getEndDate(self):
         return date.today().strftime("%d-%b-%Y")
