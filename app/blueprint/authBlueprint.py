@@ -36,6 +36,7 @@ def signin():
 
 
 @authentication.route('/predict', methods=['GET'])
+@jwt_required
 def predict():
     city = request.args.get('city')
     condition = request.args.get('condition')
