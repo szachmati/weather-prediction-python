@@ -45,7 +45,7 @@ class PredictionService:
         X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
 
         # Wskazywana jest ilość epok (EPOCHS) oraz rozmiar porcji danych (BATCH_SIZE)
-        EPOCHS = 1
+        EPOCHS = 40
         BATCH_SIZE = 5
         # Do stworzenia modelu wykorzystywana jest klasa Sequential
         model = Sequential()
