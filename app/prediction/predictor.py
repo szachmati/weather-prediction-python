@@ -9,12 +9,14 @@ from sklearn.preprocessing import MinMaxScaler
 import time
 from datetime import date, timedelta
 from .dataCreator import DataCreator
+import os.path
 
 
 class PredictionService:
     def predict(self, city, condition):
         data_creator = DataCreator()
-        # data_creator.retrieve_hist_data([city], self.getStartDate(), self.getEndDate(), 24, location_label=False, export_csv=True,store_df=True)
+        if(not os.path.exists(city + '.csv')) :
+            data_creator.retrieve_hist_data([city], self.getStartDate(), self.getEndDate(), 24, location_label=False, export_csv=True,store_df=True)
 
         # Tworzony jest objekt Dataframe z zawartością danych historycznych ze wskazanego miasta
         df = pd.read_csv(city + '.csv', sep=',')
